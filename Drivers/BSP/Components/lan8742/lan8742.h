@@ -443,4 +443,4 @@ int32_t LAN8742_GetITStatus(lan8742_Object_t *pObj, uint32_t Interrupt);
 
 /**
   * @}
-  */       
+  */

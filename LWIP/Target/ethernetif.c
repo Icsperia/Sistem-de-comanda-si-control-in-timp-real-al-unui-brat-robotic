@@ -266,6 +266,11 @@ static void low_level_init(struct netif *netif)
     netif_set_down(netif);
     return;
   }
+  uint32_t tickstart = HAL_GetTick();
+    do {
+      PHYLinkState = LAN8742_GetLinkState(&LAN8742);
+      osDelay(100);
+    } while ((PHYLinkState <= LAN8742_STATUS_LINK_DOWN) &&((HAL_GetTick() - tickstart) < 3000U));
   printf("PHY init OK, state=%ld\r\n", (long)LAN8742_GetLinkState(&LAN8742));
   if (hal_eth_init_status == HAL_OK)
   {
@@ -307,6 +312,7 @@ static void low_level_init(struct netif *netif)
       HAL_ETH_GetMACConfig(&heth, &MACConf);
       MACConf.DuplexMode = duplex;
       MACConf.Speed = speed;
+      MACConf.ChecksumOffload = DISABLE;
       HAL_ETH_SetMACConfig(&heth, &MACConf);
 
       HAL_ETH_Start_IT(&heth);
@@ -689,17 +695,17 @@ void ethernet_link_thread(void const * argument)
         break;
       }
 
-      if(linkchanged)
-      {
+
         /* Get MAC Config MAC */
         HAL_ETH_GetMACConfig(&heth, &MACConf);
         MACConf.DuplexMode = duplex;
         MACConf.Speed = speed;
+        MACConf.ChecksumOffload = DISABLE;
         HAL_ETH_SetMACConfig(&heth, &MACConf);
         HAL_ETH_Start_IT(&heth);
         netif_set_up(netif);
         netif_set_link_up(netif);
-      }
+
     }
 
 /* USER CODE BEGIN ETH link Thread core code for User BSP */

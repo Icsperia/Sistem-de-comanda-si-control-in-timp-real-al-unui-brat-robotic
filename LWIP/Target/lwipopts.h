@@ -48,11 +48,11 @@
 #define LWIP_STATS 0
 
 /* Generare și verificare software pentru toate protocoalele */
-#define CHECKSUM_GEN_IP    0
-#define CHECKSUM_GEN_UDP   0
-#define CHECKSUM_GEN_TCP   0
-#define CHECKSUM_GEN_ICMP  0
-#define CHECKSUM_GEN_ICMP6 0
+#define CHECKSUM_GEN_IP      1
+#define CHECKSUM_GEN_UDP     1
+#define CHECKSUM_GEN_TCP     1
+#define CHECKSUM_GEN_ICMP    1
+#define CHECKSUM_GEN_ICMP6   1
 
 #define CHECKSUM_CHECK_IP   0
 #define CHECKSUM_CHECK_UDP  0
@@ -62,7 +62,7 @@
 
 /* USER CODE BEGIN 1 */
 #undef MEM_SIZE
-#define MEM_SIZE (16*1024)
+#define MEM_SIZE (32*1024)
 /* USER CODE END 1 */
 
 #ifdef __cplusplus

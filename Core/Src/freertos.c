@@ -21,6 +21,8 @@
 #include "netif/etharp.h"
 #include "adc.h"
 #include <stdio.h>
+#include "udp.h"
+#include "lwip.h"
 extern struct netif gnetif;
 /* USER CODE END Includes */
 
@@ -117,7 +119,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of ADC_Readings */
-  osThreadDef(ADC_Readings, StartAdcReadings, osPriorityNormal, 0, 1024);
+  osThreadDef(ADC_Readings, StartAdcReadings, osPriorityNormal, 0, 512);
   ADC_ReadingsHandle = osThreadCreate(osThread(ADC_Readings), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -135,32 +137,25 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-  /* 1. Task-ul a pornit */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET); // LED Rosu aprins
-
-
+  /* init code for LWIP */
   MX_LWIP_Init();
-  printf("tasks: %u | free heap: %u | min free: %u\r\n",
-         (unsigned)uxTaskGetNumberOfTasks(),
-         (unsigned)xPortGetFreeHeapSize(),
-         (unsigned)xPortGetMinimumEverFreeHeapSize());
-
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);  // LED Verde aprins
-
   /* USER CODE BEGIN StartDefaultTask */
 
 
 
   osDelay(2000);
+ udpServer_init();
   Joysticks test;
 
-  for(;;)
-  {
+
 	  uint32_t cnt = 0;
 	    for(;;)
 	    {
-	      HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);   // LED albastru
-	      osDelay(400);
+
+	    	// MX_LWIP_Process();
+
+	    	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);   // LED albastru
+	      osDelay(200);
 
 	      if (++cnt >= 5)
 	      {
@@ -171,18 +166,18 @@ void StartDefaultTask(void const * argument)
 	               (unsigned long)heth.Instance->MMCTGFCR,
 	               (unsigned long)heth.Instance->MMCRFCECR);
 
-	   if(xQueuePeek(QueueJoysticks, &test,0)==pdTRUE){
-		   printf("X1=%.2f Y1=%.2f X2=%.2f Y2=%.2f\r\n",
-		         test.x1, test.y1, test.x2, test.y2);
+//	   if(xQueuePeek(QueueJoysticks, &test,0)==pdTRUE){
+////		   printf("X1=%.2f Y1=%.2f X2=%.2f Y2=%.2f\r\n",
+////		         test.x1, test.y1, test.x2, test.y2);
 		  osDelay(200);
 
-	   }
+	   //}
 
 	      }
 	    }
   /* USER CODE END StartDefaultTask */
 }
-}
+
 /* USER CODE BEGIN Header_StartAdcReadings */
 /**
 * @brief Function implementing the ADC_Readings thread.
@@ -245,3 +240,4 @@ int _write(int file, char *ptr, int len)
   return len;
 }
 /* USER CODE END Application */
+
