@@ -155,7 +155,7 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb,
 
     /* Build the reply string using the received payload */
     char buf[100];
-    int len = sprintf(buf, "Hello %s MOI BAG PUNGI\n", (char *)p->payload);
+    int len = sprintf(buf, "Hello Bonjour %s\n", (char *)p->payload);
 
     /* Allocate a pbuf for the reply */
     txBuf = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
@@ -170,42 +170,12 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb,
     /* Disconnect so the server is ready for the next client */
     udp_disconnect(upcb);
 
-    /* Free both buffers — never skip this */
     pbuf_free(txBuf);
     pbuf_free(p);
 }
 
 
 /////////////
-//void udp_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
-//{
-//
-//    printf("UDP RX: %d bytes from port %u\r\n", (int)p->len, (unsigned int)port);
-//
-//    char buf[100];
-//    int len = snprintf(buf, sizeof(buf), "Hello %.*s from Radu Adrian Mario\r\n", (int)p->len, (char *)p->payload);
-//
-//    if (len > 0) {
-//        struct pbuf *txBuf = pbuf_alloc(PBUF_TRANSPORT, (u16_t)len, PBUF_RAM);
-//        if (txBuf != NULL) {
-//            pbuf_take(txBuf, buf, (u16_t)len);
-//            err_t err = udp_sendto(upcb, txBuf, addr, port);
-//            printf("UDP TX: err=%d, len=%d\r\n", (int)err, len);
-//            pbuf_free(txBuf);
-//        }
-//    }
-//
-//    pbuf_free(p);
-//}
-
-
-
-
-
-//udp_connect(upcb, addr, port);
-//udp_send(upcb, txBuf);
-//
-//udp_disconnect(upcb);
 
 
 
@@ -213,27 +183,8 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb,
 
 
 
-//void udpClient_connect(void){
-//	err_t err;
-//
-//	upcb = udp_new();
-//
-//	ip_addr_t myIPADDR;
-//	IP_ADDR4(&myIPaddr, 192, 168, 1, 100);
-//	udp_bind(upcb, &myIPADDR, 8);
-//
-//	ip_addr_t DestIPaddr;
-//	IP_ADDR4(&DesrIPaddr, 192, 168, 1 ,50);
-//	err = udp_connect(upcb, &DestIPaddr, 7);
-//
-//	if(err = ERR_OK){
-//udpClient_send();
-//
-//udp_recv(upcb, udp_receive_callback, NULL);
-//
-//	}
-//
-//}
+
+
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
@@ -250,16 +201,7 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb,
 
     /* USER CODE BEGIN 3 */
 
-//void udp_receive_callback(void*arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port){
-//
-//	strncpy(buffer, (char*)p->payload, p->len);
-//
-//	counter++;
-//
-//	pbuf_free(p);
-//
-//
-//}
+
 
   /* USER CODE END 3 */
 
@@ -298,23 +240,6 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb,
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN 5 */
-//static void udpClient_send(void){
-//struct pbuf *txBuf;
-//chat data[100];
-//
-//int len = sprintf(data, "*sending UDP client message %d", counter);
-//
-//txBuf = pbuf_alloc (PBUF_TRANSPORT, len, PBUF_RAM);
-//
-//if(txBuf != NULL){
-//	pbuf_take(txBuf, data, len);
-//
-//	udp_send(upcb, txbuf);
-//
-//	pbuf_free(txBuf);
-//}
-//
-//}
 
 /* USER CODE END 5 */
 

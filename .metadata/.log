@@ -423,3 +423,23 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 H:\Facultate\An 1\SDTR
 
 !ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-11-06 20:06:26.983
 !MESSAGE port: 
+!SESSION 2026-11-14 20:39:09.830 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  H:\Facultate\An 1\SDTR\Sistem de control\Sistem-de-comanda-si-control-in-timp-real-al-unui-brat-robotic\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 H:\Facultate\An 1\SDTR\Sistem de control\Sistem-de-comanda-si-control-in-timp-real-al-unui-brat-robotic\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-11-14 20:39:28.042
+!MESSAGE Log4j2 initialized with config file H:\Facultate\An 1\SDTR\Sistem de control\Sistem-de-comanda-si-control-in-timp-real-al-unui-brat-robotic\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-11-14 20:39:32.547
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-11-14 20:39:37.336
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-11-14 20:39:37.352
+!MESSAGE port: 

@@ -31,8 +31,6 @@ extern struct netif gnetif;
 typedef struct{
 float x1, y1, x2,y2;
 uint32_t ts;
-
-
 }Joysticks;
 /* USER CODE END PTD */
 
@@ -140,31 +138,23 @@ void StartDefaultTask(void const * argument)
   /* init code for LWIP */
   MX_LWIP_Init();
   /* USER CODE BEGIN StartDefaultTask */
-
-
-
   osDelay(2000);
  udpServer_init();
-  Joysticks test;
-
-
 	  uint32_t cnt = 0;
 	    for(;;)
 	    {
-
 	    	// MX_LWIP_Process();
-
 	    	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);   // LED albastru
 	      osDelay(200);
 
 	      if (++cnt >= 5)
 	      {
 	        cnt = 0;
-	        printf("rxISR=%lu rxPkts=%lu txCalls=%lu txOk=%lu MMCtx=%lu MMCcrcErr=%lu\r\n",
-	               (unsigned long)dbg_rx_isr,  (unsigned long)dbg_rx_pkts,
-	               (unsigned long)dbg_tx_calls, (unsigned long)dbg_tx_ok,
-	               (unsigned long)heth.Instance->MMCTGFCR,
-	               (unsigned long)heth.Instance->MMCRFCECR);
+//	        printf("rxISR=%lu rxPkts=%lu txCalls=%lu txOk=%lu MMCtx=%lu MMCcrcErr=%lu\r\n",
+//	               (unsigned long)dbg_rx_isr,  (unsigned long)dbg_rx_pkts,
+//	               (unsigned long)dbg_tx_calls, (unsigned long)dbg_tx_ok,
+//	               (unsigned long)heth.Instance->MMCTGFCR,
+//	               (unsigned long)heth.Instance->MMCRFCECR);
 
 //	   if(xQueuePeek(QueueJoysticks, &test,0)==pdTRUE){
 ////		   printf("X1=%.2f Y1=%.2f X2=%.2f Y2=%.2f\r\n",
@@ -188,7 +178,7 @@ void StartDefaultTask(void const * argument)
 void StartAdcReadings(void const * argument)
 {
   /* USER CODE BEGIN StartAdcReadings */
-  /* Prioritate mica, ca sa nu intarzie thread-urile LwIP/Ethernet */
+
   osThreadSetPriority(NULL, osPriorityLow);
 
   Joysticks joysticks;
@@ -203,7 +193,7 @@ void StartAdcReadings(void const * argument)
     joysticks.ts = xTaskGetTickCount();
 
 //    printf("A0 (PA3): %.2f V | A1 (PC0): %.2f V | A3 (PF3): %.2f V\r\n",
-//           voltaj, voltaj1, voltaj2);
+//    voltaj, voltaj1, voltaj2);
 
     xQueueOverwrite(QueueJoysticks, &joysticks);
     osDelay(10);
