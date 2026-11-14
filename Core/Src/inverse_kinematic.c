@@ -21,6 +21,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "inverse_kinematic.h"
+#include "clamp.h"
 #include <math.h>
 /* USER CODE END Includes */
 
@@ -81,23 +82,37 @@ float h_vertical = z - h_base;
 float squared_horizontal_radius = horizontal_radius*horizontal_radius;
 float  squared_h_vertical = h_vertical * h_vertical;
 
-float squared_direct_distance = squared_horizontal_radius +squared_h_vertical;
+float squared_direct_distance = squared_horizontal_radius + squared_h_vertical;
 
 float direct_distance = sqrtf(squared_direct_distance);
 
 float difference_vertical_horizontal = h_vertical_articulation - h_horizontal_articulation;
 
-if(direct_distance > (h_vertical_articulation+h_horizontal_articulation)||d<(differece_horizontal_vertical)){
+if(direct_distance > (h_vertical_articulation+h_horizontal_articulation)||direct_distance<fabsf(difference_vertical_horizontal)){
 
 //daca depaseste limitele sa-si pastreze pozitia
 
 }
 
-float cos_angle_horizontal_vertical =
+float cos_angle_horizontal_vertical = ((h_vertical_articulation * h_vertical_articulation +h_horizontal_articulation*h_horizontal_articulation - squared_direct_distance) /(2*h_vertical_articulation*h_horizontal_articulation));
+float cos_vertical_distance =((h_vertical_articulation*h_vertical_articulation + squared_direct_distance-h_horizontal_articulation*h_horizontal_articulation)/(2*h_vertical_articulation*direct_distance));
+
+float clamped_angle_horizontal_vertical = clampf(cos_angle_horizontal_vertical, -1 ,1);
+float clamped_angel_vertical_distance = clampf(cos_vertical_distance, -1 ,1);
+
+float elbow_angle = acosf(clamped_angle_horizontal_vertical)*(180/PI);
+float h_vertical_articulation_target = acosf(clamped_angel_vertical_distance)*(180/PI);
+float horizontal_target_elevation = atan2f(h_vertical,horizontal_radius)*(180/PI);
+
+
+float target_shoulder = 90 -( h_vertical_articulation_target+horizontal_target_elevation);
+float target_elbow = 90 - elbow_angle;
 
 
 
-};
+}
+
+
 
   /* USER CODE END 1 */
 
@@ -107,7 +122,7 @@ float cos_angle_horizontal_vertical =
   /* Enable the CPU Cache */
 
   /* Enable I-Cache---------------------------------------------------------*/
-;
+
 
   /* Enable D-Cache---------------------------------------------------------*/
   //SCB_EnableDCache();

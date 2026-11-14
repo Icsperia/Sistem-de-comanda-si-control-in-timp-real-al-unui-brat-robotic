@@ -21,7 +21,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "clamp.h"
-#include <arm_math.h>
+
 #include <math.h>
 /* USER CODE END Includes */
 
@@ -63,10 +63,13 @@
   */
 
   /* USER CODE BEGIN 1 */
-float minss(float a , float b){
-__mm_store_ss(&a, _mm_min_ss(_mm_set_ss(a), _mm_set_ss(b)));
+float clampf(float value, float min_val , float max_val){
+if(value<min_val) return min_val;
+if(value>max_val) return max_val;
 
-return a;
+
+
+return value;
 
 }
 
@@ -103,12 +106,6 @@ return a;
 
   /* USER CODE BEGIN 2 */
 
-float maxss(float a, float b){
-
-	_mm_store_ss(&a, _mm_max_ss(_mm_set_ss(a),_mm_set_ss(b)));
-
-	return a;
-}
 
 
 
@@ -131,12 +128,6 @@ float maxss(float a, float b){
 
     /* USER CODE BEGIN 3 */
 
-float clamp(float value , float a , float b){
-_mm_store_ss(&val, _mm_min_ss(_mm_max_ss(_mm_set_ss(val),_mm_set_ss(minval))));
-
-
-	return val;
-}
 
   /* USER CODE END 3 */
 
