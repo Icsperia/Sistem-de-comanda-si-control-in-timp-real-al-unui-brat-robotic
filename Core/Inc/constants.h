@@ -12,11 +12,11 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-#define h_base 84
-#define offset 8.2
-#define h_vertical_articulation 128
-#define h_horizontal_articulation 138
-#define PI 3.14159265358979323846264338327950288
+#define arm_base 84.0f
+#define v_offset 8.2f
+#define vertical_articulation 128.0f
+#define horizontal_articulation 138.0f
+#define PI 3.14159265358979323846264338327950288f
 /* USER CODE END Private defines */
 
 

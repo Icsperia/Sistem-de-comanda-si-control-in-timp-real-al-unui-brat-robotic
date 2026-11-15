@@ -155,7 +155,7 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb,
 
     /* Build the reply string using the received payload */
     char buf[100];
-    int len = sprintf(buf, "Hello Bonjour %s\n", (char *)p->payload);
+    int len = sprintf(buf, "Hello B %s\n", (char *)p->payload);
 
     /* Allocate a pbuf for the reply */
     txBuf = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
