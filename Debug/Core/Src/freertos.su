@@ -1,6 +1,6 @@
-..\Core\Src\freertos.c:84:6:vApplicationGetIdleTaskMemory	24	static
-..\Core\Src\freertos.c:97:6:MX_FREERTOS_Init	72	static
-..\Core\Src\freertos.c:141:6:StartDefaultTask	72	static
-..\Core\Src\freertos.c:196:6:StartAdcReadings	96	static
-..\Core\Src\freertos.c:252:7:Read_Analogic_Pin	40	static
-..\Core\Src\freertos.c:271:5:_write	24	static
+..\Core\Src\freertos.c:87:6:vApplicationGetIdleTaskMemory	24	static
+..\Core\Src\freertos.c:100:6:MX_FREERTOS_Init	72	static
+..\Core\Src\freertos.c:144:6:StartDefaultTask	56	static
+..\Core\Src\freertos.c:208:6:StartAdcReadings	96	static
+..\Core\Src\freertos.c:264:7:Read_Analogic_Pin	40	static
+..\Core\Src\freertos.c:283:5:_write	24	static
