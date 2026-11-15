@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include "udp.h"
 #include "lwip.h"
+#include "constants.h"
+#include "inverse_kinematic.h"
 extern struct netif gnetif;
 /* USER CODE END Includes */
 
@@ -32,6 +34,7 @@ typedef struct{
 float x1, y1, x2,y2;
 uint32_t ts;
 }Joysticks;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -47,6 +50,7 @@ uint32_t ts;
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 QueueHandle_t QueueJoysticks;
+QueueHandle_t QueueIK;
 
 
 
@@ -109,6 +113,7 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_QUEUES */
 	 QueueJoysticks = xQueueCreate(1, sizeof(Joysticks));
+	 QueueIK = xQueueCreate(1, sizeof(joint_angles));
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -147,9 +152,11 @@ void StartDefaultTask(void const * argument)
 	    	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);   // LED albastru
 	      osDelay(200);
 
-	      if (++cnt >= 5)
-	      {
-	        cnt = 0;
+	      Joysticks test;
+	      joint_angles test1;
+//	      if (++cnt >= 5)
+//	      {
+//	        cnt = 0;
 //	        printf("rxISR=%lu rxPkts=%lu txCalls=%lu txOk=%lu MMCtx=%lu MMCcrcErr=%lu\r\n",
 //	               (unsigned long)dbg_rx_isr,  (unsigned long)dbg_rx_pkts,
 //	               (unsigned long)dbg_tx_calls, (unsigned long)dbg_tx_ok,
@@ -157,15 +164,26 @@ void StartDefaultTask(void const * argument)
 //	               (unsigned long)heth.Instance->MMCRFCECR);
 
 //	   if(xQueuePeek(QueueJoysticks, &test,0)==pdTRUE){
-////		   printf("X1=%.2f Y1=%.2f X2=%.2f Y2=%.2f\r\n",
-////		         test.x1, test.y1, test.x2, test.y2);
-		  osDelay(200);
+//		   printf("X1=%.2f Y1=%.2f X2=%.2f Y2=%.2f\r\n",
+//		         test.x1, test.y1, test.x2, test.y2);
+//	   }
+////
+		   if( xQueuePeek(QueueIK, &test1, 0)==pdTRUE){
+			   printf("base=%.2f elbow=%.2f shoulder=%.2f\r\n",
+					   test1.base, test1.elbow, test1.shoulder);
+}
 
-	   //}
+		   osDelay(200);
 
-	      }
-	    }
+	   //
+
+
+	    //}
+
+
   /* USER CODE END StartDefaultTask */
+}
+
 }
 
 /* USER CODE BEGIN Header_StartAdcReadings */
@@ -182,21 +200,47 @@ void StartAdcReadings(void const * argument)
   osThreadSetPriority(NULL, osPriorityLow);
 
   Joysticks joysticks;
-
+  joint_angles joint;
+ // joint_angles  angles;
   /* Infinite loop */
   for(;;)
   {
-    joysticks.x1  = Read_Analogic_Pin(&hadc1, ADC_CHANNEL_3);
-    joysticks.y1 = Read_Analogic_Pin(&hadc1, ADC_CHANNEL_10);
-    joysticks.x2  = Read_Analogic_Pin(&hadc3, ADC_CHANNEL_13);
-    joysticks.y2  = Read_Analogic_Pin(&hadc3, ADC_CHANNEL_9);
-    joysticks.ts = xTaskGetTickCount();
 
+	 float b_x1 =  Read_Analogic_Pin(&hadc1, ADC_CHANNEL_3);
+	 float b_y1 =  Read_Analogic_Pin(&hadc1, ADC_CHANNEL_10);
+	 float b_x2 =  Read_Analogic_Pin(&hadc3, ADC_CHANNEL_13);
+	 float b_y2 =  Read_Analogic_Pin(&hadc3, ADC_CHANNEL_9);
+
+//
+//
+//	joysticks.x1  = Read_Analogic_Pin(&hadc1, ADC_CHANNEL_3);
+//    joysticks.y1 = Read_Analogic_Pin(&hadc1, ADC_CHANNEL_10);
+//    joysticks.x2  = Read_Analogic_Pin(&hadc3, ADC_CHANNEL_13);
+//    joysticks.y2  = Read_Analogic_Pin(&hadc3, ADC_CHANNEL_9);
+
+	     joysticks.x1  = map(b_x1, 0.0f, 3.3f, -82.0f, 82.0f);
+	     joysticks.y1  = map(b_y1, 0.0f, 3.3f, -128.0f, 128.0f);
+	     joysticks.x2  = map(b_x2, 0.0f, 3.3f, -138.0f,138.0f );
+	     joysticks.y2  = map(b_x2, 0.0f, 3.3f, -138.0f,138.0f );
+	 joysticks.ts = xTaskGetTickCount();
+
+
+
+    joint = inverse_kinematic(PI, arm_base, v_offset, vertical_articulation, horizontal_articulation, joysticks.x1,  joysticks.y1,  joysticks.x2);
+    joint.tick = xTaskGetTickCount();
+    osDelay(200);
 //    printf("A0 (PA3): %.2f V | A1 (PC0): %.2f V | A3 (PF3): %.2f V\r\n",
 //    voltaj, voltaj1, voltaj2);
 
+//
+//joint.base = joints.base_angle;
+//joint.shoulder = joints.shoulder_angle;
+//joint.elbow = joints.elbow_angle;
+//joint.tick = xTaskGetTickCount();
+
+    xQueueOverwrite(QueueIK, &joint);
     xQueueOverwrite(QueueJoysticks, &joysticks);
-    osDelay(10);
+    osDelay(200);
 
 
   }
