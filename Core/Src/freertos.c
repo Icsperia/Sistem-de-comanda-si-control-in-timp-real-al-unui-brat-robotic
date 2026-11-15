@@ -25,6 +25,8 @@
 #include "lwip.h"
 #include "constants.h"
 #include "inverse_kinematic.h"
+#include "ssd1306.h"
+#include "i2c.h"
 extern struct netif gnetif;
 /* USER CODE END Includes */
 
@@ -58,6 +60,7 @@ extern ADC_HandleTypeDef hadc1;
 extern UART_HandleTypeDef huart3;
 extern ADC_HandleTypeDef hadc3;
 extern ETH_HandleTypeDef heth;
+extern I2C_HandleTypeDef hi2c1;
 extern volatile uint32_t dbg_rx_isr, dbg_rx_pkts, dbg_tx_calls, dbg_tx_ok;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -145,8 +148,19 @@ void StartDefaultTask(void const * argument)
   /* USER CODE BEGIN StartDefaultTask */
   osDelay(2000);
  udpServer_init();
-	  uint32_t cnt = 0;
-	    for(;;)
+ printf("SUCCES: OLED inițializat cu succes!\r\n");
+ uint8_t init_res = ssd1306_Init(&hi2c1);
+   if (init_res != 0) {
+       printf("EROARE I2C: ssd1306_Init a eșuat (Cod: %d)\r\n", init_res);
+   } else {
+       printf("SUCCES: OLED inițializat cu succes!\r\n");
+
+       ssd1306_Fill(Black);
+       ssd1306_SetCursor(0, 0);
+       ssd1306_WriteString("OLED Ready", Font_7x10, White);
+       ssd1306_UpdateScreen(&hi2c1);
+   }
+	  for(;;)
 	    {
 	    	// MX_LWIP_Process();
 	    	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);   // LED albastru
@@ -168,10 +182,10 @@ void StartDefaultTask(void const * argument)
 //		         test.x1, test.y1, test.x2, test.y2);
 //	   }
 ////
-		   if( xQueuePeek(QueueIK, &test1, 0)==pdTRUE){
-			   printf("base=%.2f elbow=%.2f shoulder=%.2f\r\n",
-					   test1.base, test1.elbow, test1.shoulder);
-}
+//		   if( xQueuePeek(QueueIK, &test1, 0)==pdTRUE){
+//			   printf("base=%.2f elbow=%.2f shoulder=%.2f\r\n",
+//					   test1.base, test1.elbow, test1.shoulder);
+//}
 
 		   osDelay(200);
 
@@ -183,9 +197,7 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE END StartDefaultTask */
 }
-
 }
-
 /* USER CODE BEGIN Header_StartAdcReadings */
 /**
 * @brief Function implementing the ADC_Readings thread.
@@ -221,7 +233,7 @@ void StartAdcReadings(void const * argument)
 	     joysticks.x1  = map(b_x1, 0.0f, 3.3f, -82.0f, 82.0f);
 	     joysticks.y1  = map(b_y1, 0.0f, 3.3f, -128.0f, 128.0f);
 	     joysticks.x2  = map(b_x2, 0.0f, 3.3f, -138.0f,138.0f );
-	     joysticks.y2  = map(b_x2, 0.0f, 3.3f, -138.0f,138.0f );
+	     joysticks.y2  = map(b_y2, 0.0f, 3.3f, -138.0f,138.0f );
 	 joysticks.ts = xTaskGetTickCount();
 
 

@@ -1,6 +1,5 @@
 ..\Middlewares\Third_Party\LwIP\src\api\api_msg.c:115:1:lwip_netconn_err_to_msg	16	static
 ..\Middlewares\Third_Party\LwIP\src\api\api_msg.c:131:1:lwip_netconn_is_err_msg	16	static
-..\Middlewares\Third_Party\LwIP\src\api\api_msg.c:159:1:recv_raw	40	static
 ..\Middlewares\Third_Party\LwIP\src\api\api_msg.c:218:1:recv_udp	40	static
 ..\Middlewares\Third_Party\LwIP\src\api\api_msg.c:293:1:recv_tcp	40	static
 ..\Middlewares\Third_Party\LwIP\src\api\api_msg.c:357:1:poll_tcp	24	static
